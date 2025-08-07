@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Rút Gọn Link - YeuMoney</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #fceabb, #f8b500);
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #333;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      max-width: 500px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff8533;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 18px;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔗 Rút Gọn Link với YeuMoney</h1>
+  <input type="text" id="linkInput" placeholder="Nhập link cần rút gọn...">
+  <br>
+  <button onclick="shortenLink()">Rút gọn</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function shortenLink() {
+      const input = document.getElementById("linkInput").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      if (!input) {
+        resultDiv.innerHTML = "❌ Vui lòng nhập link cần rút gọn.";
+        return;
+      }
+
+      const apiUrl = `https://yeumoney.com/QL_api.php?token=f93f2323f22e060608231b33ad5c5ffc725d83a7e0474807f479d77dc6c5e147&format=json&url=${encodeURIComponent(input)}`;
+
+      resultDiv.innerHTML = "⏳ Đang xử lý...";
+
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (data.shortenedUrl) {
+          resultDiv.innerHTML = `✅ Link rút gọn: <br><a href="${data.shortenedUrl}" target="_blank">${data.shortenedUrl}</a>`;
+        } else if (data.message) {
+          resultDiv.innerHTML = `❌ Lỗi: ${data.message}`;
+        } else {
+          resultDiv.innerHTML = "❌ Đã xảy ra lỗi không xác định.";
+        }
+      } catch (error) {
+        resultDiv.innerHTML = "❌ Lỗi khi gọi API: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
